@@ -71,7 +71,7 @@ class GamesView(ListAPIView):
 * Password: ~~passwd~~
 %s
 :::
-''' % (serializer.data['name'].replace('\n', ' '), data['start'].replace('\n', ' '), data['start'].replace('\n', ' '),
+''' % (serializer.data['name'].replace('\n', ' '), data['start'].replace('\n', ' '), data['end'].replace('\n', ' '),
         data['message'].replace(':::', ':\::'))
             game.codimd = new_note(jwt_gid(game.id), body)  # 新增 note
             game.save()
