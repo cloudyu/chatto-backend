@@ -132,7 +132,7 @@ CHATTO_PAD = {
         'SERVER_URL_EXT': 'https://codimd.cloudyu.me',  # 外部链接
         'SERVER_URL_INT': 'http://codimd:3000',  		# 内网链接
     }, 
-    #'ROCKET': RocketChat('chatto-bot', 'password', 'http://rocketchat:3000')
+    'ROCKET': RocketChat('chatto-bot', 'password', 'http://rocketchat:3000')
 }
 
 # Internationalization
