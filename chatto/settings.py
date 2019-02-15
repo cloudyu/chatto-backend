@@ -174,4 +174,5 @@ REST_FRAMEWORK = {
 import datetime
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=2),  # 一个比赛比个 2 天差不多了
+    'JWT_PAYLOAD_HANDLER': 'chatto.apps.user.jwt.jwt_payload_handler'
 }

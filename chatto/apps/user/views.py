@@ -5,7 +5,6 @@ from rest_framework import status
 from django.conf import settings
 import rest_framework_jwt.utils
 from django.http import HttpResponseRedirect
-
 import json
 from .oauth import Oauth
 from .models import User
@@ -28,10 +27,6 @@ class OauthView(APIView):
         if request.user.pk:
             return Response({
                 'success': True,
-                'user': {
-                    'nickname': request.user.username,
-                    'avatar': request.user.avatar
-                    },
                 'message': 'You are already logged in.'
                 }, status=status.HTTP_200_OK
             )
@@ -75,10 +70,6 @@ class UserView(APIView):
         if request.user.pk:
             return Response({
                 'success': True,
-                'user': {
-                    'nickname': request.user.username,
-                    'avatar': request.user.avatar
-                    },
                 'message': 'Login successful.'
                 }
             )
