@@ -49,7 +49,7 @@ class GamesView(ListAPIView):
             # 创建 chat channel 并且邀请创建者
             rocket = settings.CHATTO_PAD['ROCKET']
 
-            group_name = "%s_%s" % (time.strftime('%Y-%m-%d', time.localtime()), hex(random.randint(0x10000000, 0xffffffff))[2:])
+            group_name = "%s_%s" % (time.strftime('%Y-%m-%d', time.localtime()), serializer.data['name'])# 支持中文名 直接拼接
             group = rocket.groups_create(group_name).json()
             data['rocket_chat_id'] = group['group']['_id']
             data['rocket_chat'] = group['group']['name']
@@ -189,7 +189,7 @@ class GameView(ListAPIView):
             data['codimd'] = new_note(jwt_gid(game.id), body)       # 新增 note
 
             group_name = "%s_%s_%s" % (time.strftime('%Y-%m-%d', time.localtime()),
-                                       data['type'], hex(random.randint(0x10000000, 0xffffffff))[2:])
+                                       data['type'], serializer.data['name'])# 支持中文名 直接拼接
             group = self.rocket.groups_create(group_name).json()
             self.rocket.groups_set_topic(group['group']['_id'], serializer.data['name'])  # 设置标题
             self.rocket.groups_invite(group['group']['_id'], request.user.id)              # 邀请用户
