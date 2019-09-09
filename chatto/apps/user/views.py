@@ -40,17 +40,24 @@ class OauthView(APIView):
                 rocket = settings.CHATTO_PAD['ROCKET']
                 # rocket_token = rocket.users_create_token(user_id=user_info['sub']).json()  # 重新生成 REST_TOKEN
                 rocket_info = rocket.users_info(user_id=user_info['sub']).json()
+                try:
+                    user = User.objects.get(email=user_info['email'])
+                    user.last_login=datetime.datetime.now()
+                    user.username = user_info['preffered_username']
+                    user.avatar = user_info['picture']
+                    user.roles = json.dumps(rocket_info['user']['roles'])
+                except User.DoesNotExist:
+                    user = User(
+                        id=user_info['sub'],
+                        last_login=datetime.datetime.now(),
+                        email=user_info['email'],
+                        username=user_info['preffered_username'],
+                        avatar=user_info['picture'],
+                        roles=json.dumps(rocket_info['user']['roles']),
+                    )
 
-                user = User(
-                    id=user_info['sub'],
-                    last_login=datetime.datetime.now(),
-                    email=user_info['email'],
-                    username=user_info['preffered_username'],
-                    avatar=user_info['picture'],
-                    # auth_token=rocket_token['data']['authToken'],
-                    roles=json.dumps(rocket_info['user']['roles']),
-                )
                 user.save()  # 更新用户信息
+
                 payload = jwt_payload_handler(user)
                 token = jwt_encode_handler(payload)
             return Response({
