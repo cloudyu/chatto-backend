@@ -8,6 +8,7 @@ class User(AbstractUser):
     email = models.CharField(max_length=256)
     avatar = models.CharField(max_length=256)
     roles = models.CharField(max_length=256, default='')
+    rocket = models.CharField(max_length=64, editable=False)
 
     def __str__(self):
         return str(self.username)

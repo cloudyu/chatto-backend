@@ -54,8 +54,8 @@ class GamesView(ListAPIView):
             data['rocket_chat_id'] = group['group']['_id']
             data['rocket_chat'] = group['group']['name']
             rocket.groups_set_topic(data['rocket_chat_id'], serializer.data['name'])  # 设置标题
-            rocket.groups_invite(group['group']['_id'], request.user.id)              # 邀请用户
-            rocket.groups_add_owner(group['group']['_id'], request.user.id)           # 添加owner权限
+            rocket.groups_invite(group['group']['_id'], request.user.rocket)              # 邀请用户
+            rocket.groups_add_owner(group['group']['_id'], request.user.rocket)           # 添加owner权限
             serializer = self.get_serializer(data=data)
             serializer.is_valid()
             game = serializer.save()
@@ -114,7 +114,7 @@ class GameView(ListAPIView):
                     }, status=status.HTTP_403_FORBIDDEN)
                 finally:
                     challenge.user.add(request.user)
-                    self.rocket.groups_invite(challenge.rocket_chat_id, request.user.id)  # 邀请用户
+                    self.rocket.groups_invite(challenge.rocket_chat_id, request.user.rocket)  # 邀请用户
             serializer = self.get_serializer(challenge, hide_fields=['game', 'hide', 'create_time', 'rocket_chat_id'])
             _list = serializer.data
             return Response({
@@ -138,7 +138,7 @@ class GameView(ListAPIView):
                     code = request.GET.get('code', '')
                     if game.join_code == '' or code == game.join_code:
                         game.user.add(request.user)
-                        self.rocket.groups_invite(game.rocket_chat_id, request.user.id)  # 邀请用户
+                        self.rocket.groups_invite(game.rocket_chat_id, request.user.rocket)  # 邀请用户
                     else:  # 没有权限参加这个比赛
                         return Response({
                             'success': False,
@@ -192,8 +192,8 @@ class GameView(ListAPIView):
                                        data['type'], serializer.data['name'])# 支持中文名 直接拼接
             group = self.rocket.groups_create(group_name).json()
             self.rocket.groups_set_topic(group['group']['_id'], serializer.data['name'])  # 设置标题
-            self.rocket.groups_invite(group['group']['_id'], request.user.id)              # 邀请用户
-            self.rocket.groups_add_owner(group['group']['_id'], request.user.id)           # 添加owner权限
+            self.rocket.groups_invite(group['group']['_id'], request.user.rocket)              # 邀请用户
+            self.rocket.groups_add_owner(group['group']['_id'], request.user.rocket)           # 添加owner权限
             # 公告新题目添加
             message = ":exclamation:New challenge %s online!" % (serializer.data['name'])
             ret = self.rocket.chat_post_message(message, room_id=game.rocket_chat_id).json()

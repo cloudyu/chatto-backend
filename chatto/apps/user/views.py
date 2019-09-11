@@ -36,7 +36,6 @@ class OauthView(APIView):
                 return Response({'success': False, 'error': 'Authorization code error.'}, status=status.HTTP_401_UNAUTHORIZED)
             else:
                 user_info = self._oauth.user_info(res['access_token'])
-                print(user_info)
                 rocket = settings.CHATTO_PAD['ROCKET']
                 # rocket_token = rocket.users_create_token(user_id=user_info['sub']).json()  # 重新生成 REST_TOKEN
                 rocket_info = rocket.users_info(user_id=user_info['sub']).json()
@@ -46,6 +45,7 @@ class OauthView(APIView):
                     user.username = user_info['preffered_username']
                     user.avatar = user_info['picture']
                     user.roles = json.dumps(rocket_info['user']['roles'])
+                    user.rocket = user_info['sub']
                 except User.DoesNotExist:
                     user = User(
                         id=user_info['sub'],
@@ -54,6 +54,7 @@ class OauthView(APIView):
                         username=user_info['preffered_username'],
                         avatar=user_info['picture'],
                         roles=json.dumps(rocket_info['user']['roles']),
+                        rocket=user_info['sub']
                     )
 
                 user.save()  # 更新用户信息
